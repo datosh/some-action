@@ -8,7 +8,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-      - name: Use my local greeter
+      - id: greeter
+        name: Use my local greeter
         uses: ./.github/actions/hello
         with:
           who-to-greet: Fabian
+      - name: Print generated random number
+        run: echo random-number ${{ steps.greeter.outputs.random-number }}
