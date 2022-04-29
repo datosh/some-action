@@ -1,5 +1,5 @@
 name: hello
-description: "Let's see what this can do."
+description: "Hello & generate number, I'm totally well designed."
 author: 'Fabian Kammel'
 inputs:
   who-to-greet:
@@ -25,7 +25,4 @@ runs:
     shell: bash
   - name: Error handler
     if: ${{ failure() }}
-    run: echo I am handling the error.
-    shell: bash
-  - run: ${{ github.action_path }}/goodbye.sh
-    shell: bash
+    uses: ./.github/actions/goodbye

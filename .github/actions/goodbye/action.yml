@@ -1,0 +1,9 @@
+name: goodbye
+description: "Until we meet again."
+author: 'Fabian Kammel'
+runs:
+  using: 'composite'
+  steps:
+  - name: Goodbyer
+    run: echo Goodbye.
+    shell: bash
