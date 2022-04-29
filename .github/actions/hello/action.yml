@@ -27,8 +27,5 @@ runs:
     if: ${{ failure() }}
     run: echo I am handling the error.
     shell: bash
-  - name: What is this?
-    run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-    shell: bash
-  - run: goodbye.sh
+  - run: ${{ github.action_path }}/goodbye.sh
     shell: bash
