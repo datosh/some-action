@@ -1,6 +1,9 @@
 name: hello
 description: "Hello & generate number, I'm totally well designed."
 author: 'Fabian Kammel'
+branding:
+  color: purple
+  icon: airplay
 inputs:
   who-to-greet:
     description: 'Who to greet'
