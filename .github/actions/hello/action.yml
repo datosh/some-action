@@ -28,8 +28,8 @@ runs:
   - name: Have a look
     shell: bash
     run: |
-      if [ ${{ inputs.listAll }} = true ]; then lsFlags='-a'; fi
-      ls ${ lsFlags }
+      if [ ${{ inputs.listAll }} = true ]; then lsFlags=-a; fi
+      ls ${lsFlags}
   - name: Random number generator
     id: random-number-generator
     run: echo "::set-output name=random-id::$(echo $RANDOM)"
