@@ -12,6 +12,9 @@ inputs:
   produceError:
     description: 'Shall we error?'
     required: true
+  listAll:
+    description: 'List all files'
+    required: true
 outputs:
   random-number:
     description: "Random number"
@@ -22,6 +25,11 @@ runs:
   - name: Greeter
     run: echo Hello ${{ inputs.who-to-greet }}.
     shell: bash
+  - name: Have a look
+    shell: bash
+    run: >
+      if [ ${{ inputs.listAll }} = true ]; then lsFlags='-a'; fi
+      ls ${ lsFlags }
   - name: Random number generator
     id: random-number-generator
     run: echo "::set-output name=random-id::$(echo $RANDOM)"

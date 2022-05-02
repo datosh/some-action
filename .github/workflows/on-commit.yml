@@ -8,6 +8,11 @@ on:
         required: true
         type: boolean
         default: false
+      listAll:
+        description: 'Run ls with -a flag.'
+        required: true
+        type: boolean
+        default: false
       randomMax:
         description: 'Biggest random number to generate'
         required: true
@@ -17,8 +22,8 @@ on:
         required: true
         type: choice
         options:
-        - "a"
-        - "b"
+        - "Hello"
+        - "Hey"
 
 jobs:
   some-job:
@@ -32,6 +37,7 @@ jobs:
         with:
           who-to-greet: Fabian
           produceError: ${{ github.event.inputs.produceError }}
+          listAll: ${{ github.event.inputs.listAll }}
         continue-on-error: true
       - name: Print generated random number
         run: echo random-number ${{ steps.greeter.outputs.random-number }}
