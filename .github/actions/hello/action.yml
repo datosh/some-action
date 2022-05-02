@@ -9,6 +9,9 @@ inputs:
     description: 'Who to greet'
     required: true
     default: 'World'
+  produceError:
+    description: 'Shall we error?'
+    required: true
 outputs:
   random-number:
     description: "Random number"
@@ -24,7 +27,8 @@ runs:
     run: echo "::set-output name=random-id::$(echo $RANDOM)"
     shell: bash
   - name: Error producer
-    run: exit 42
+    run: >
+      if [ ${{ inputs.produceError }} ]; then exit 42; fi
     shell: bash
   - name: Error handler
     if: ${{ failure() }}

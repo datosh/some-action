@@ -31,6 +31,7 @@ jobs:
         uses: ./.github/actions/hello
         with:
           who-to-greet: Fabian
+          produceError: ${{ github.event.inputs.produceError }}
         continue-on-error: true
       - name: Print generated random number
         run: echo random-number ${{ steps.greeter.outputs.random-number }}
