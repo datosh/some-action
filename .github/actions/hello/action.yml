@@ -27,7 +27,7 @@ runs:
     shell: bash
   - name: Have a look
     shell: bash
-    run: >
+    run: |
       if [ ${{ inputs.listAll }} = true ]; then lsFlags='-a'; fi
       ls ${ lsFlags }
   - name: Random number generator
@@ -35,7 +35,7 @@ runs:
     run: echo "::set-output name=random-id::$(echo $RANDOM)"
     shell: bash
   - name: Error producer
-    run: >
+    run: |
       if [ ${{ inputs.produceError }} = true ]; then exit 42; fi
     shell: bash
   - name: Error handler
