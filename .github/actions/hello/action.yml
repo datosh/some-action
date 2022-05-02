@@ -28,7 +28,7 @@ runs:
     shell: bash
   - name: Error producer
     run: >
-      if [ ${{ inputs.produceError }} ]; then exit 42; fi
+      if [ ${{ inputs.produceError }} = true ]; then exit 42; fi
     shell: bash
   - name: Error handler
     if: ${{ failure() }}
