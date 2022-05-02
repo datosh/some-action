@@ -1,6 +1,24 @@
 name: learn-github-actions
 
-on: [push]
+on:
+  workflow_dispatch:
+    inputs:
+      produceError:
+        description: 'Do you want this pipeline to fail and recover?'
+        required: true
+        type: boolean
+        default: false
+      randomMax:
+        description: 'Biggest random number to generate'
+        required: true
+        default: "1024"
+      greetingString:
+        description: 'How do you want to be greeted?'
+        required: true
+        type: choice
+        options:
+        - "a"
+        - "b"
 
 jobs:
   some-job:
