@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       produceError:
-        description: 'Do you want this pipeline to fail and recover?'
+        description: 'Do you want this pipeline to fail and [recover?](http://google.com)'
         required: true
         type: boolean
         default: false
