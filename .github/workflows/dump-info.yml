@@ -9,9 +9,13 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-      - name: Context info dump
+      - name: break it
+        run: exit 42
+        shell: bash
+      - name: Notify channel
         run: |
-          echo github.action: ${{ github.action }}
-          echo github.job: ${{ github.job }}
-          echo github.run_id: ${{ github.run_id }}
+          curl                                          \
+            -H "Content-Type: application/json"         \
+            -d "{\"text\": \"pipeline broke"}"          \
+            "${{ secrets.MS_TEAMS_WEBHOOK_URI }}"
         shell: bash
