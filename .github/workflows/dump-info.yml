@@ -13,6 +13,7 @@ jobs:
         run: exit 42
         shell: bash
       - name: Notify channel
+        if: failure()
         run: |
           curl                                          \
             -H "Content-Type: application/json"         \
