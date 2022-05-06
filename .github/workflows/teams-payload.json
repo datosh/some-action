@@ -4,8 +4,8 @@
     "themeColor": "FF5733",
     "summary": "E2E Job Failed",
     "sections": [{
-        "activityTitle": "${TEAMS_TITLE}",
-        "activitySubtitle": "${TEAMS_JOB_NAME}",
+        "activityTitle": "TEAMS_TITLE",
+        "activitySubtitle": "TEAMS_JOB_NAME",
         "activityImage": "https://miro.medium.com/max/552/1*G7s61tFPaLI9JRxWYpRNLw.png",
         "facts": [{
             "name": "Status",
@@ -18,7 +18,7 @@
         "name": "Go To Action",
         "targets": [{
             "os": "default",
-            "uri": "https://github.com/edgelesssys/constellation/runs/${TEAMS_RUN_ID}"
+            "uri": "https://github.com/edgelesssys/constellation/runs/TEAMS_RUN_ID"
         }]
     }]
 }

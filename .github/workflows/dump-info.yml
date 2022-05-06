@@ -15,6 +15,7 @@ jobs:
       - name: Notify channel
         if: failure()
         run: |
+          ls -la
           curl                                          \
             -H "Content-Type: application/json"         \
             -d @teams-payload.json                      \
