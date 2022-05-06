@@ -13,4 +13,5 @@ jobs:
         run: |
           echo github.action: ${{ github.action }}
           echo github.job: ${{ github.job }}
+          echo github.run_id: ${{ github.run_id }}
         shell: bash
