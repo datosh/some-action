@@ -4,13 +4,13 @@ on:
   push:
 
 jobs:
-  some-job:
+  dump-info:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Context info dump
         run: |
-          echo github.job.job_id: ${{ github.job.job_id }}
-          echo github.job_id: ${{ github.job_id }}
+          echo github.action: ${{ github.action }}
+          echo github.job: ${{ github.job }}
         shell: bash
