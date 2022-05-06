@@ -1,0 +1,29 @@
+name: learn-github-actions
+
+on:
+  workflow_dispatch:
+    inputs:
+      how-to-greet:
+        description: 'Greeting word or phrase'
+        required: true
+        default: 'Hello'
+      who-to-greet:
+        description: 'Who to greet'
+        required: true
+        default: 'World'
+
+jobs:
+  some-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - id: greeter
+        name: Use my local greeter
+        uses: ./.github/actions/hello
+        with:
+          who-to-greet: ${{ github.event.inputs.how-to-greet }}
+          how-to-greet: ${{ github.event.inputs.who-to-greet }}
+      - name: Always goodbye
+        if: ${{ always() }}
+        uses: ./.github/actions/goodbye

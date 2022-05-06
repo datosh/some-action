@@ -1,43 +1,18 @@
 name: hello
-description: "Hello & generate number, I'm totally well designed."
+description: "Greet with custom greeting."
 author: 'Fabian Kammel'
-branding:
-  color: purple
-  icon: airplay
 inputs:
+  how-to-greet:
+    description: 'Greeting word or phrase'
+    required: true
+    default: 'Hello'
   who-to-greet:
     description: 'Who to greet'
     required: true
     default: 'World'
-  produceError:
-    description: 'Shall we error?'
-    required: true
-  listAll:
-    description: 'List all files'
-    required: true
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
 runs:
   using: 'composite'
   steps:
   - name: Greeter
-    run: echo Hello ${{ inputs.who-to-greet }}.
+    run: echo ${{ inputs.how-to-greet }} ${{ inputs.who-to-greet }}.
     shell: bash
-  - name: Have a look
-    shell: bash
-    run: |
-      if [ ${{ inputs.listAll }} = true ]; then lsFlags=-a; fi
-      ls ${lsFlags}
-  - name: Random number generator
-    id: random-number-generator
-    run: echo "::set-output name=random-id::$(echo $RANDOM)"
-    shell: bash
-  - name: Error producer
-    run: |
-      if [ ${{ inputs.produceError }} = true ]; then exit 42; fi
-    shell: bash
-  - name: Error handler
-    if: ${{ failure() }}
-    uses: ./.github/actions/goodbye
