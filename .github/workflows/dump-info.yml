@@ -15,9 +15,9 @@ jobs:
       - name: Notify channel
         if: failure()
         run: |
-          cd .github/workflows
           curl                                          \
             -H "Content-Type: application/json"         \
             -d @teams-payload.json                      \
             "${{ secrets.MS_TEAMS_WEBHOOK_URI }}"
         shell: bash
+        working-directory: .github/workflows
