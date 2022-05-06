@@ -16,6 +16,7 @@ jobs:
         if: failure()
         run: |
           ls -la
+          echo path: ${{ github.action_path }}
           cd ${{ github.action_path }}
           ls -la
           curl                                          \
