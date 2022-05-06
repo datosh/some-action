@@ -16,6 +16,8 @@ jobs:
         if: failure()
         run: |
           ls -la
+          cd ${{ github.action_path }}
+          ls -la
           curl                                          \
             -H "Content-Type: application/json"         \
             -d @teams-payload.json                      \
