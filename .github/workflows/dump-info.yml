@@ -17,6 +17,6 @@ jobs:
         run: |
           curl                                          \
             -H "Content-Type: application/json"         \
-            -d "{\"text\": \"pipeline broke"}"          \
+            -d "{\"text\": \"pipeline broke\"}"          \
             "${{ secrets.MS_TEAMS_WEBHOOK_URI }}"
         shell: bash
