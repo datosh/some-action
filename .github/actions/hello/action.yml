@@ -16,3 +16,6 @@ runs:
   - name: Greeter
     run: echo ${{ inputs.how-to-greet }} ${{ inputs.who-to-greet }}.
     shell: bash
+  - name: Sleep
+    run: sleep 30s
+    shell: bash
