@@ -25,5 +25,5 @@ jobs:
           who-to-greet: ${{ github.event.inputs.how-to-greet }}
           how-to-greet: ${{ github.event.inputs.who-to-greet }}
       - name: Always goodbye
-        if: ${{ always() }}
+        if: ${{ always() && !env.ACT }}
         uses: ./.github/actions/goodbye
