@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite tests="4" failures="0" time="0.005" name="github.com/datosh/some-action">
+		<properties>
+			<property name="go.version" value="go1.18.3"></property>
+		</properties>
+		<testcase classname="some-action" name="TestAdd" time="0.000"></testcase>
+		<testcase classname="some-action" name="TestAdd/2+2=4" time="0.000"></testcase>
+		<testcase classname="some-action" name="TestAdd/3+3=9" time="0.000"></testcase>
+		<testcase classname="some-action" name="TestAdd/7+7=14" time="0.000"></testcase>
+	</testsuite>
+</testsuites>

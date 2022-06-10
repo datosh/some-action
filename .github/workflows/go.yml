@@ -1,0 +1,29 @@
+name: go
+
+on:
+  pull_request:
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write         # for EnricoMi/publish-unit-test-result-action@v1
+      pull-requests: write  # for EnricoMi/publish-unit-test-result-action@v1
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+    - name: Setup Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.18'
+    - name: Install go-junit-report
+      run: go install github.com/jstemmer/go-junit-report@v1.0.0
+
+    # This step has exit_code=1, if any tests fail
+    - name: Run Unit Tests
+      run: go test -v 2>&1 ./... | go-junit-report -set-exit-code > report.xml
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: report.xml
