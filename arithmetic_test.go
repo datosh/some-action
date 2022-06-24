@@ -13,7 +13,7 @@ func TestAdd(t *testing.T) {
 		want int
 	}{
 		{"2+2=4", args{a: 2, b: 2}, 4},
-		{"3+3=9", args{a: 3, b: 3}, 9},
+		{"3+3=6", args{a: 3, b: 3}, 6},
 		{"7+7=14", args{a: 7, b: 7}, 14},
 	}
 	for _, tt := range tests {

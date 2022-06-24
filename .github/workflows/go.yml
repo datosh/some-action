@@ -9,9 +9,12 @@ jobs:
     permissions:
       checks: write         # for EnricoMi/publish-unit-test-result-action@v1
       pull-requests: write  # for EnricoMi/publish-unit-test-result-action@v1
+      contents: write       # for softprops/action-gh-release@v1
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
+    - name: Install Cosign
+      uses: sigstore/cosign-installer@main
     - name: Setup Go
       uses: actions/setup-go@v3
       with:
@@ -24,6 +27,25 @@ jobs:
       run: go test -v 2>&1 ./... | go-junit-report -set-exit-code > report.xml
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v3
-      if: always() # always run even if the previous step fails
+      if: always() # always run even if unit tests fail
       with:
         report_paths: report.xml
+
+    - name: Build Calculator
+      run: go build ./cmd/calculator
+    - name: Sign Calculator
+      run: |
+        cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
+        cosign verify-blob --key cosign.pub --signature calculator.sir calculator
+      env:
+        COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        draft: true
+        files: |
+          calculator
+          calculator.sig
