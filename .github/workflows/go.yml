@@ -36,7 +36,7 @@ jobs:
     - name: Sign Calculator
       run: |
         cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
-        cosign verify-blob --key cosign.pub --signature calculator.sir calculator
+        cosign verify-blob --key .github/cosign.pub --signature calculator.sir calculator
       env:
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
