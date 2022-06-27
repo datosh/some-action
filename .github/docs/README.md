@@ -11,12 +11,17 @@ GitHub links to
 [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 for a maintained action to interact with releases.
 
-
 ## Sigstore
 
 Multiple ways of creating signatures & storing artifacts are possible.
 
 [Installation](https://docs.sigstore.dev/cosign/installation)
+
+### Fulcio
+
+Enables using OIDC identities, instead of long-lived key pair with explicit trust.
+
+Currenly not used in this PoC.
 
 ### Verification \w public key, signature & artifact
 
