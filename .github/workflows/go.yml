@@ -41,6 +41,8 @@ jobs:
       run: go build ./cmd/calculator
     - name: Sign Calculator
       run: |
+        set -e
+        set -o pipefail
         COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
         # Verify - As documentation & check
         # Local Signature (input: artifact, key, signature)
