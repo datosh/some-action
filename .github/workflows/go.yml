@@ -35,8 +35,14 @@ jobs:
       run: go build ./cmd/calculator
     - name: Sign Calculator
       run: |
-        cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
+        COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
+        # Verify - As documentation & check
+        # Local Signature (input: artifact, key, signature)
         cosign verify-blob --key .github/cosign.pub --signature calculator.sig calculator
+        # Transparency Log Signature (input: artifact, key)
+        uuid=$(rekor-cli search --artifact calculator | tail -n 1)
+        sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
+        cosign verify-blob --key .github/cosign.pub --signature <(echo $sig) calculator
       env:
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
@@ -49,3 +55,4 @@ jobs:
         files: |
           calculator
           calculator.sig
+          .github/cosign.pub

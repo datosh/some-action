@@ -10,3 +10,13 @@ action are archived:
 GitHub links to
 [softprops/action-gh-release](https://github.com/softprops/action-gh-release)
 for a maintained action to interact with releases.
+
+
+## Sigstore
+
+Verify using rekor:
+```
+uuid=$(rekor-cli search --artifact calculator | tail -n 1)
+sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
+cosign verify-blob --key cosign.pub --signature <(echo $sig) calculator
+```
