@@ -43,7 +43,7 @@ jobs:
       run: |
         set -e
         set -o pipefail
-        printf "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
+        echo $COSIGN_PUBLIC_KEY > .github/cosign.pub
         COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
         # Verify - As documentation & check
         # Local Signature (input: artifact, key, signature)
@@ -60,7 +60,7 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/v')
+      if: always()
       with:
         draft: true
         files: |
