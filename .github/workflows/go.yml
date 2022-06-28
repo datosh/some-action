@@ -43,7 +43,7 @@ jobs:
       run: |
         set -e
         set -o pipefail
-        echo $COSIGN_PUBLIC_KEY > .github/cosign.pub
+        printf "%s" $COSIGN_PUBLIC_KEY > .github/cosign.pub
         COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
         # Verify - As documentation & check
         # Local Signature (input: artifact, key, signature)
