@@ -43,6 +43,7 @@ jobs:
       run: |
         set -e
         set -o pipefail
+        echo $COSIGN_PUBLIC_KEY > .github/cosign.pub
         COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
         # Verify - As documentation & check
         # Local Signature (input: artifact, key, signature)
@@ -52,6 +53,7 @@ jobs:
         sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
         cosign verify-blob --key .github/cosign.pub --signature <(echo $sig) calculator
       env:
+        COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
