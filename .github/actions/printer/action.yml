@@ -1,0 +1,9 @@
+name: printer
+description: "Prints whatever TO_PRINT environment variable holds."
+author: 'Fabian Kammel'
+runs:
+  using: 'composite'
+  steps:
+    - name: Print
+      run: echo $TO_PRINT
+      shell: bash

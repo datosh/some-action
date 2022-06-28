@@ -24,6 +24,16 @@ jobs:
         with:
           who-to-greet: ${{ github.event.inputs.how-to-greet }}
           how-to-greet: ${{ github.event.inputs.who-to-greet }}
+      - id: printer
+        name: Print with printer
+        uses: ./.github/actions/printer
+        env:
+          TO_PRINT: "normal printer call"
+      - id: nested_printer
+        name: Print with nested_printer
+        uses: ./.github/actions/nested_printer
+        env:
+          TO_PRINT: "nested printer call"
       - name: Always goodbye
         if: ${{ always() && !env.ACT }}
         uses: ./.github/actions/goodbye

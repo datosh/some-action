@@ -1,0 +1,8 @@
+name: nested_printer
+description: "The whether environment varibales are passed down to sub-actions."
+author: 'Fabian Kammel'
+runs:
+  using: 'composite'
+  steps:
+    - name: Call Printer
+      uses: ./.github/actions/printer
