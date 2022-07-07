@@ -18,6 +18,10 @@ jobs:
       with:
         cosign-version: 'v1.9.0'
         rekor-cli-version: 'v0.9.0'
+    - name: Test sigstore tools installed
+      run: |
+        cosign version
+        rekor-cli version
     - name: Setup Go
       uses: actions/setup-go@v3
       with:
