@@ -1,0 +1,30 @@
+name: update
+
+on:
+  push:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # v3.0.1
+      with:
+        path: some-action
+    - name: Checkout target repository
+      uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # v3.0.1
+      with:
+        repository: datosh/some-target
+        path: some-target
+
+    - name: Publish new file
+      uses: dmnemec/copy_file_to_another_repo_action@c93037aa10fa8893de271f19978c980d0c1a9b37 # v1.1.1
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source_file: some-action/copy.me
+        destination_repo: datosh/some-target
+        destination_branch_create: action/update-file
+        user_name: '${{ github.actor }}'
+        user_email: '${{ github.actor }}@users.noreply.github.com'
+        commit_message: 'File was updated by datosh/some-action${{ env.COMMIT_END}}'
