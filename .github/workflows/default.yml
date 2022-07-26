@@ -1,0 +1,12 @@
+name: Default
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Is it installed?
+        run: go version
