@@ -54,6 +54,7 @@ jobs:
         sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
         cosign verify-blob --key .github/cosign.pub --signature <(echo $sig) calculator
       shell: bash
+      if: ${{ secrets.COSIGN_PUBLIC_KEY != '' && secrets.COSIGN_PRIVATE_KEY != '' && secrets.COSIGN_PASSWORD != '' }}
       env:
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
