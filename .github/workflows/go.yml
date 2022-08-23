@@ -65,8 +65,15 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/v')
       with:
         draft: true
-        discussion_category_name: announcements
         files: |
           calculator
           calculator.sig
           .github/cosign.pub
+
+    - name: Release2
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        draft: true
+        files: |
+          go.mod
