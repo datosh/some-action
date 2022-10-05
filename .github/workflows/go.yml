@@ -70,7 +70,6 @@ jobs:
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-      if: startsWith(github.ref, 'refs/tags/v')
 
     - name: Release
       uses: softprops/action-gh-release@v1
