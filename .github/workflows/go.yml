@@ -41,6 +41,17 @@ jobs:
 
     - name: Build Calculator
       run: go build ./cmd/calculator
+    - name: Generate provenance
+      uses: slsa-framework/github-actions-demo@9474e92bbf825d5b4b46810fc9367dfc73429a2a
+      with:
+        artifact_path: calculator
+    - name: Upload provenance
+      uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
+      with:
+        name: provenance
+        path: build.provenance
+        if-no-files-found: error
+
     - name: Sign Calculator
       run: |
         set -e
@@ -70,3 +81,4 @@ jobs:
           calculator
           calculator.sig
           .github/cosign.pub
+          build.provenance
