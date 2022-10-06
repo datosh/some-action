@@ -54,7 +54,7 @@ jobs:
 
     - name: Sign Calculator
       run: |
-        set -e
+        set -ex
         set -o pipefail
         echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
         COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
@@ -63,7 +63,9 @@ jobs:
         cosign verify-blob --key .github/cosign.pub --signature calculator.sig calculator
         # Transparency Log Signature (input: artifact, key)
         uuid=$(rekor-cli search --artifact calculator | tail -n 1)
+        echo uuid $uuid
         sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
+        echo sig $sig
         cosign verify-blob --key .github/cosign.pub --signature <(echo $sig) calculator
       shell: bash
       env:
