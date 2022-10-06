@@ -61,12 +61,9 @@ jobs:
         # Verify - As documentation & check
         # Local Signature (input: artifact, key, signature)
         cosign verify-blob --key .github/cosign.pub --signature calculator.sig calculator
-        sleep 10
         # Transparency Log Signature (input: artifact, key)
         uuid=$(rekor-cli search --artifact calculator | tail -n 1)
-        echo uuid $uuid
         sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
-        echo sig $sig
         cosign verify-blob --key .github/cosign.pub --signature <(echo $sig) calculator
       shell: bash
       env:
