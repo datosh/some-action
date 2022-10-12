@@ -5,6 +5,9 @@ updates:
     schedule:
       interval: "daily"
 
+  # There is no support for recursing alternate folders or wildcards in dependabot, see:
+  # https://github.com/dependabot/dependabot-core/issues/5137
+  # https://github.com/dependabot/dependabot-core/issues/5047
   - package-ecosystem: "github-actions"
     directory: ".github/actions/goodbye"
     schedule:
