@@ -2,17 +2,10 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
-    ":preserveSemverRanges"
+    ":preserveSemverRanges",
+    "helpers:pinGitHubActionDigests"
   ],
+  "pinDigests": true,
   "addLabels": ["dependencies"],
-  "packageRules": [
-    {
-      "matchUpdateTypes": ["minor", "patch"]
-    },
-    {
-      "matchUpdateTypes": ["major"],
-      "addLabels": ["major-dependency"]
-    }
-  ],
   "platform": "github"
 }
