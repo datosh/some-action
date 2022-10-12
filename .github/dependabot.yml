@@ -6,6 +6,6 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "github-actions"
-    directory: ".github/actions/**/*.yml"
+    directory: ".github/actions/**"
     schedule:
       interval: "daily"
