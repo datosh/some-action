@@ -6,6 +6,26 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "github-actions"
-    directory: ".github/actions/**"
+    directory: ".github/actions/goodbye"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "github-actions"
+    directory: ".github/actions/hello"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "github-actions"
+    directory: ".github/actions/nested_printer"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "github-actions"
+    directory: ".github/actions/printer"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "github-actions"
+    directory: ".github/actions/update_me"
     schedule:
       interval: "daily"
