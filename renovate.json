@@ -5,7 +5,6 @@
     ":preserveSemverRanges",
     "helpers:pinGitHubActionDigests"
   ],
-  "pinDigests": true,
-  "addLabels": ["dependencies"],
-  "platform": "github"
+  "enabledManagers": ["github-actions"],
+  "addLabels": ["dependencies"]
 }
