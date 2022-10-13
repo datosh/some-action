@@ -6,11 +6,5 @@
     "helpers:pinGitHubActionDigests"
   ],
   "addLabels": ["dependencies"],
-  "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
-  "packageRules": [
-    {
-      "matchDatasources": ["golang-version"],
-      "allowedVersions": "<1.18.0"
-    }
-  ]
+  "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
 }
