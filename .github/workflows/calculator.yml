@@ -224,6 +224,24 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
+  provenance:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    needs:
+      - build-calculator
+    steps:
+      - name: Download calculator binary
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+        with:
+          name: calculator
+      - name: Compute artifact hashes
+        id: artifact-hash
+        run: |
+          ARTIFACT_HASH=$(sha256sum calculator | base64 -w0)
+          echo "ARTIFACT_HASH=${ARTIFACT_HASH}" >> $GITHUB_OUTPUT
+          echo ${ARTIFACT_HASH}
+
   release:
     runs-on: ubuntu-latest
     permissions:
