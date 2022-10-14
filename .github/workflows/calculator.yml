@@ -8,6 +8,7 @@ permissions: {}
 env:
   GO_VERSION: '1.19.2'
   SYFT_VERSION: '0.58.0'
+  GRYPE_VERSION: '0.50.2'
   IMAGE_REF: 'ghcr.io/${{ github.repository }}/calculator'
 
 jobs:
@@ -161,20 +162,25 @@ jobs:
       uses: sigstore/cosign-installer@7cc35d7fdbe70d4278a0c96779081e6fac665f88 # tag=v2.8.0
     # Currently not supported in action: https://github.com/anchore/sbom-action/issues/153
     # Need to download syft and run commands directly
-    - name: Download syft
+    - name: Download syft & grype
       run: |
         curl -LO https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_linux_amd64.tar.gz
         tar -xzf syft_${SYFT_VERSION}_linux_amd64.tar.gz
         ./syft version
+        curl -LO https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_linux_amd64.tar.gz
+        tar -xzf grype_${GRYPE_VERSION}_linux_amd64.tar.gz
+        ./grype version
+        echo $(pwd) >> $GITHUB_PATH
     - name: Generate SBOM
       run: |
         set -ex
         echo "$COSIGN_PRIVATE_KEY" > cosign.key
-        ./syft attest --key cosign.key ${{ env.IMAGE_REF }}:${{ github.sha }} -o cyclonedx-json > calculator.att.json
+        syft attest --key cosign.key ${{ env.IMAGE_REF }}:${{ github.sha }} -o cyclonedx-json > calculator.att.json
         cat calculator.att.json
         echo "${{ env.IMAGE_REF }}:${{ github.sha }}"
         cosign attach attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --attestation calculator.att.json
-        cosign verify-attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --key env://COSIGN_PUBLIC_KEY
+        cosign verify-attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --type cyclonedx --key env://COSIGN_PUBLIC_KEY
+        grype ${{ env.IMAGE_REF }}:${{ github.sha }} --fail-on critical --only-fixed
       shell: bash
       env:
         COSIGN_EXPERIMENTAL: 1
