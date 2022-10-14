@@ -169,6 +169,8 @@ jobs:
     - name: Generate SBOM
       run: |
         set -ex
+        ./syft version
+        cosign version
         echo "$COSIGN_PRIVATE_KEY" > cosign.key
         ./syft attest --key cosign.key ${{ env.IMAGE_REF }}:${{ github.sha }} -o cyclonedx-json > calculator.att.json
         cosign attach attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --attestation calculator.att.json
