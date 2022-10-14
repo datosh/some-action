@@ -12,7 +12,7 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      id-token: write # TODO: try to remove
       contents: read
       checks: write
     steps:
@@ -90,6 +90,7 @@ jobs:
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+    # TODO: upload public key
     - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
       with:
         name: calculator.sig
@@ -144,14 +145,14 @@ jobs:
     runs-on: ubuntu-latest
     needs:
     - build-calculator-image
+    permissions:
+      contents: read
+      packages: write
     steps:
     - name: Check out repository
       uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
-    - name: Install Cosign & Rekor CLI
-      uses: sigstore/sigstore-installer@initial
-      with:
-        cosign-version: 'v1.12.1'
-        rekor-cli-version: 'v0.12.2'
+    - name: Install Cosign CLI
+      uses: sigstore/cosign-installer@7cc35d7fdbe70d4278a0c96779081e6fac665f88 # tag=v2.8.0
     - name: Sign calculator-image
       run: |
         set -ex
@@ -159,7 +160,6 @@ jobs:
         echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
         COSIGN_EXPERIMENTAL=1 cosign sign --key env://COSIGN_PRIVATE_KEY ghcr.io/${{ github.repository }}/calculator
         # Verify - As documentation & check
-        # Local Signature (input: artifact, key, signature)
         cosign verify --key .github/cosign.pub ghcr.io/${{ github.repository }}/calculator
       shell: bash
       env:
