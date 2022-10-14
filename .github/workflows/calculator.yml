@@ -68,6 +68,10 @@ jobs:
       with:
         cosign-version: 'v1.12.1'
         rekor-cli-version: 'v0.12.2'
+    - name: Dwonload calculator binary
+      uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+      with:
+        name: calculator
     - name: Sign calculator
       run: |
         set -ex
@@ -116,7 +120,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ inputs.githubToken }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Dwonload calculator binary
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
       with:
