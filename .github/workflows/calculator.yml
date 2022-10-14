@@ -3,7 +3,7 @@ name: calculator
 on:
   push:
 
-# permissions: {}
+permissions: {}
 
 env:
   GO_VERSION: '1.19.2'
@@ -184,6 +184,11 @@ jobs:
     steps:
     - name: Dwonload artifacts
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+    - name: Write public key
+      run: |
+        echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
+      env:
+        COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
     - name: Release
       uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # tag=v0.1.14
       with:
