@@ -7,6 +7,7 @@ permissions: {}
 
 env:
   GO_VERSION: '1.19.2'
+  SYFT_VERSION: 'v0.58.0'
 
 jobs:
   unit-tests:
@@ -139,6 +140,39 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
 
+
+  sbom-image:
+    runs-on: ubuntu-latest
+    needs:
+    - calculator-image
+    steps:
+    - name: Install Cosign CLI
+      uses: sigstore/cosign-installer@7cc35d7fdbe70d4278a0c96779081e6fac665f88 # tag=v2.8.0
+    # Currently not supported in action: https://github.com/anchore/sbom-action/issues/153
+    # Need to download syft and run commands directly
+    - name: Download syft
+      run: |
+        curl -LO https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_linux_amd64.tar.gz
+        tar -xzf syft_${SYFT_VERSION}_linux_amd64.tar.gz
+        ./syft version
+    - name: Generate SBOM
+      run: |
+        ./syft attest --key env://COSIGN_PRIVATE_KEY ghcr.io/${{ github.repository }}/calculator -o cyclonedx-json > calculator.att.json
+        cosign attach attestation ghcr.io/${{ github.repository }}/calculator --attestation calculator.att.json
+        cosign verify-attestation ghcr.io/${{ github.repository }}/calculator --key env://COSIGN_PUBLIC_KEY
+      shell: bash
+      env:
+        COSIGN_EXPERIMENTAL: 1
+        COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+        COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+
+# TODO: Add Syft for SBOM generation
+# TODO: Sign SBOM
+# TODO: Add SBOM to container registry
+# TODO: Generate provenance
+# TODO: Sign provenance
+# TODO: Add signed provenance to container registry
 
   sign-calculator-image:
     runs-on: ubuntu-latest
