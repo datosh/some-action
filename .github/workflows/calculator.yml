@@ -75,21 +75,20 @@ jobs:
       run: |
         set -ex
         set -o pipefail
-        echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
-        COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
+        cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
         # Verify - As documentation & check
         # Local Signature (input: artifact, key, signature)
-        cosign verify-blob --key .github/cosign.pub --signature calculator.sig calculator
+        cosign verify-blob --key env://COSIGN_PUBLIC_KEY --signature calculator.sig calculator
         # Transparency Log Signature (input: artifact, key)
         uuid=$(rekor-cli search --artifact calculator | tail -n 1)
         sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
-        cosign verify-blob --key .github/cosign.pub --signature <(echo $sig) calculator
+        cosign verify-blob --key env://COSIGN_PUBLIC_KEY --signature <(echo $sig) calculator
       shell: bash
       env:
+        COSIGN_EXPERIMENTAL: 1
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-    # TODO: upload public key
     - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
       with:
         name: calculator.sig
@@ -140,6 +139,7 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
 
+
   sign-calculator-image:
     runs-on: ubuntu-latest
     needs:
@@ -174,6 +174,7 @@ jobs:
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
+
   release:
     runs-on: ubuntu-latest
     needs:
@@ -186,7 +187,7 @@ jobs:
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
     - name: Write public key
       run: |
-        echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
+        echo "$COSIGN_PUBLIC_KEY" > cosign.pub
       env:
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
     - name: Release
@@ -196,4 +197,4 @@ jobs:
         files: |
           calculator
           calculator.sig
-          .github/cosign.pub
+          cosign.pub
