@@ -234,6 +234,7 @@ jobs:
     permissions:
       actions: read
       contents: read
+      id-token: write
     needs:
       - build-calculator
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.2.0
