@@ -8,6 +8,7 @@ permissions: {}
 env:
   GO_VERSION: '1.19.2'
   SYFT_VERSION: '0.58.0'
+  IMAGE_REF: 'ghcr.io/${{ github.repository }}/calculator'
 
 jobs:
   unit-tests:
@@ -111,7 +112,7 @@ jobs:
       uses: docker/metadata-action@12cce9efe0d49980455aaaca9b071c0befcdd702 # tag=v4.1.0
       with:
         images: |
-          ghcr.io/${{ github.repository }}/calculator
+          ${{ env.IMAGE_REF }}
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
           type=semver,pattern={{version}}
@@ -169,9 +170,9 @@ jobs:
       run: |
         set -ex
         echo "$COSIGN_PRIVATE_KEY" > cosign.key
-        ./syft attest --verbose --key cosign.key ghcr.io/${{ github.repository }}/calculator -o cyclonedx-json > calculator.att.json
-        cosign attach attestation ghcr.io/${{ github.repository }}/calculator --verbose --attestation calculator.att.json
-        cosign verify-attestation ghcr.io/${{ github.repository }}/calculator --verbose --key env://COSIGN_PUBLIC_KEY
+        ./syft attest --verbose --key cosign.key ${{ env.IMAGE_REF }} -o cyclonedx-json > calculator.att.json
+        cosign attach attestation ${{ env.IMAGE_REF }} --verbose --attestation calculator.att.json
+        cosign verify-attestation ${{ env.IMAGE_REF }} --verbose --key env://COSIGN_PUBLIC_KEY
       shell: bash
       env:
         COSIGN_EXPERIMENTAL: 1
@@ -209,10 +210,10 @@ jobs:
       run: |
         cosign sign \
           --key env://COSIGN_PRIVATE_KEY \
-          ghcr.io/${{ github.repository }}/calculator
+          ${{ env.IMAGE_REF }}
         cosign verify \
           --key env://COSIGN_PUBLIC_KEY \
-          ghcr.io/${{ github.repository }}/calculator
+          ${{ env.IMAGE_REF }}
       shell: bash
       env:
         COSIGN_EXPERIMENTAL: 1
