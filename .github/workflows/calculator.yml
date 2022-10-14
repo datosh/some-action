@@ -173,6 +173,7 @@ jobs:
         set -ex
         echo "$COSIGN_PRIVATE_KEY" > cosign.key
         ./syft attest --verbose --key cosign.key ${{ env.IMAGE_REF }}:${{ github.sha }} -o cyclonedx-json > calculator.att.json
+        sleep 5
         cosign attach attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --verbose --attestation calculator.att.json
         cosign verify-attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --verbose --key env://COSIGN_PUBLIC_KEY
       shell: bash
