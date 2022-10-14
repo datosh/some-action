@@ -233,7 +233,7 @@ jobs:
   provenance:
     permissions:
       actions: read
-      contents: read
+      contents: write
       id-token: write
     needs:
       - build-calculator
