@@ -101,7 +101,7 @@ jobs:
           ghcr.io/${{ github.repository }}/calculator
         tags: |
           type=raw,value=latest,enable={{is_default_branch}}
-          type=raw,value=${{tag}},enable=${{ !startsWith(github.ref, 'refs/tags/v') }}
+          type=semver,pattern={{version}}
           type=ref,event=branch
     - name: Log in to ghcr.io
       id: docker-login
