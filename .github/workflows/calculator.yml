@@ -12,7 +12,6 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # TODO: try to remove
       contents: read
       checks: write
     steps:
@@ -162,14 +161,15 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Sign calculator-image
       run: |
-        set -ex
-        set -o pipefail
-        echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
-        COSIGN_EXPERIMENTAL=1 cosign sign --key env://COSIGN_PRIVATE_KEY ghcr.io/${{ github.repository }}/calculator
-        # Verify - As documentation & check
-        cosign verify --key .github/cosign.pub ghcr.io/${{ github.repository }}/calculator
+        cosign sign \
+          --key env://COSIGN_PRIVATE_KEY \
+          ghcr.io/${{ github.repository }}/calculator
+        cosign verify \
+          --key env://COSIGN_PUBLIC_KEY \
+          ghcr.io/${{ github.repository }}/calculator
       shell: bash
       env:
+        COSIGN_EXPERIMENTAL: 1
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
