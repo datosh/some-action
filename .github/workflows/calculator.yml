@@ -7,7 +7,7 @@ permissions: {}
 
 env:
   GO_VERSION: '1.19.2'
-  SYFT_VERSION: 'v0.58.0'
+  SYFT_VERSION: '0.58.0'
 
 jobs:
   unit-tests:
