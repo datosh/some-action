@@ -177,17 +177,19 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
     - build-calculator
     - sign-calculator
     - unit-tests
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-    - name: Download artifacts
+    - name: Download calculator binary
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
       with:
         name: calculator
-    - name: Download artifacts
+    - name: Download calculator signature
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
       with:
         name: calculator.sig
@@ -197,10 +199,7 @@ jobs:
       env:
         COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
     - name: Release
-      uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # tag=v0.1.14
+      uses: ncipollo/release-action@4c75f0f2e4ae5f3c807cf0904605408e319dcaac # tag=v1.11.1
       with:
         draft: true
-        files: |
-          calculator
-          calculator.sig
-          cosign.pub
+        artifacts: "calculator,calculator.sig,cosign.pub"
