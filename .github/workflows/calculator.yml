@@ -157,7 +157,8 @@ jobs:
         ./syft version
     - name: Generate SBOM
       run: |
-        ./syft attest --key env://COSIGN_PRIVATE_KEY ghcr.io/${{ github.repository }}/calculator -o cyclonedx-json > calculator.att.json
+        echo "$COSIGN_PRIVATE_KEY" > cosign.key
+        ./syft attest --key cosign.key ghcr.io/${{ github.repository }}/calculator -o cyclonedx-json > calculator.att.json
         cosign attach attestation ghcr.io/${{ github.repository }}/calculator --attestation calculator.att.json
         cosign verify-attestation ghcr.io/${{ github.repository }}/calculator --key env://COSIGN_PUBLIC_KEY
       shell: bash
