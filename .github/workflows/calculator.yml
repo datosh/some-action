@@ -145,7 +145,17 @@ jobs:
     runs-on: ubuntu-latest
     needs:
     - build-calculator-image
+    permissions:
+      contents: read
+      packages: write
     steps:
+    - name: Log in to ghcr.io
+      id: docker-login
+      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # tag=v2.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Install Cosign CLI
       uses: sigstore/cosign-installer@7cc35d7fdbe70d4278a0c96779081e6fac665f88 # tag=v2.8.0
     # Currently not supported in action: https://github.com/anchore/sbom-action/issues/153
