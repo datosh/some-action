@@ -5,6 +5,11 @@
     ":preserveSemverRanges",
     "helpers:pinGitHubActionDigests"
   ],
-  "addLabels": ["dependencies"],
-  "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
+  "addLabels": [
+    "dependencies"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy",
+    "gomodUpdateImportPaths"
+  ]
 }

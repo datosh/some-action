@@ -67,7 +67,7 @@ jobs:
       with:
         cosign-version: 'v1.12.1'
         rekor-cli-version: 'v0.12.2'
-    - name: Dwonload calculator binary
+    - name: Download calculator binary
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
       with:
         name: calculator
@@ -122,7 +122,7 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Dwonload calculator binary
+    - name: Download calculator binary
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
       with:
         name: calculator
@@ -183,8 +183,16 @@ jobs:
     - unit-tests
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-    - name: Dwonload artifacts
+    - name: Download artifacts
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+      with:
+        name: calculator
+        path: calculator
+    - name: Download artifacts
+      uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+      with:
+        name: calculator.sig
+        path: calculator.sig
     - name: Write public key
       run: |
         echo "$COSIGN_PUBLIC_KEY" > cosign.pub
