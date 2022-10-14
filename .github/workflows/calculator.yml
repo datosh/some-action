@@ -179,7 +179,9 @@ jobs:
         cat calculator.att.json
         echo "${{ env.IMAGE_REF }}:${{ github.sha }}"
         cosign attach attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --attestation calculator.att.json
-        cosign verify-attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --type cyclonedx --key env://COSIGN_PUBLIC_KEY
+        # TODO: Enable verification of attestation
+        # https://sigstore.slack.com/archives/C01PZKDL4DP/p1665761799380409
+        # cosign verify-attestation ${{ env.IMAGE_REF }}:${{ github.sha }} --type cyclonedx --key env://COSIGN_PUBLIC_KEY
         grype ${{ env.IMAGE_REF }}:${{ github.sha }} --fail-on critical --only-fixed
       shell: bash
       env:
