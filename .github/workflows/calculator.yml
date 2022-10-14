@@ -1,0 +1,166 @@
+name: calculator
+
+on:
+  push:
+
+# permissions: {}
+
+env:
+  GO_VERSION: '1.19.2'
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+    - name: Setup Go
+      uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f # tag=v3.3.0
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Install go-junit-report
+      run: go install github.com/jstemmer/go-junit-report@v2.0.0
+    - name: Run Unit Tests
+      run: go test -v 2>&1 ./... | go-junit-report -set-exit-code > report.xml
+    - name: Test Report
+      uses: dorny/test-reporter@c9b3d0e2bd2a4e96aaf424dbaa31c46b42318226 # tag=v1.6.0
+      if: always()
+      with:
+        name: calculator tests
+        path: report.xml
+        reporter: java-junit
+
+
+  build-calculator:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+    - name: Setup Go
+      uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f # tag=v3.3.0
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Build Calculator
+      run: |
+        CGO_ENABLED=0 go build \
+          -o calculator \
+          -trimpath -buildvcs=false -ldflags "-s -w -buildid='' \
+          ./cmd/calculator
+    - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
+      with:
+        name: calculator
+        path: calculator
+
+
+  sign-calculator:
+    runs-on: ubuntu-latest
+    needs:
+      - build-calculator
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+    - name: Install Cosign & Rekor CLI
+      uses: sigstore/sigstore-installer@initial
+      with:
+        cosign-version: 'v1.12.1'
+        rekor-cli-version: 'v0.12.2'
+    - name: Sign calculator
+      run: |
+        set -ex
+        set -o pipefail
+        echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
+        COSIGN_EXPERIMENTAL=1 cosign sign-blob --key env://COSIGN_PRIVATE_KEY calculator > calculator.sig
+        # Verify - As documentation & check
+        # Local Signature (input: artifact, key, signature)
+        cosign verify-blob --key .github/cosign.pub --signature calculator.sig calculator
+        # Transparency Log Signature (input: artifact, key)
+        uuid=$(rekor-cli search --artifact calculator | tail -n 1)
+        sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
+        cosign verify-blob --key .github/cosign.pub --signature <(echo $sig) calculator
+      shell: bash
+      env:
+        COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+        COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+    - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
+      with:
+        name: calculator.sig
+        path: calculator.sig
+
+
+  build-calculator-image:
+    runs-on: ubuntu-latest
+    needs:
+    - build-calculator
+    steps:
+    - name: Docker metadata
+      id: meta
+      uses: docker/metadata-action@12cce9efe0d49980455aaaca9b071c0befcdd702 # tag=v4.1.0
+      with:
+        images: |
+          ghcr.io/${{ github.repository }}/calculator
+        tags: |
+          type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=${{tag}},enable=${{ !startsWith(github.ref, 'refs/tags/v') }}
+          type=ref,event=branch
+    - name: Log in to ghcr.io
+      id: docker-login
+      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # tag=v2.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ inputs.githubToken }}
+    - name: Dwonload calculator binary
+      uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+      with:
+        name: calculator
+    - name: Build and push container image
+      id: build-micro-service
+      uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5 # tag=v3.2.0
+      with:
+        context: .
+        file: ./cmd/calculator
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+
+  sign-calculator-image:
+    runs-on: ubuntu-latest
+    needs:
+    - build-calculator-image
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+    - name: Install Cosign & Rekor CLI
+      uses: sigstore/sigstore-installer@initial
+      with:
+        cosign-version: 'v1.12.1'
+        rekor-cli-version: 'v0.12.2'
+    - name: Sign calculator-image
+      run: |
+        set -ex
+        set -o pipefail
+        echo "$COSIGN_PUBLIC_KEY" > .github/cosign.pub
+        COSIGN_EXPERIMENTAL=1 cosign sign --key env://COSIGN_PRIVATE_KEY ghcr.io/${{ github.repository }}/calculator
+        # Verify - As documentation & check
+        # Local Signature (input: artifact, key, signature)
+        cosign verify --key .github/cosign.pub ghcr.io/${{ github.repository }}/calculator
+      shell: bash
+      env:
+        COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+        COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dwonload artifacts
+      uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+    - name: Release
+      uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # tag=v0.1.14
+      if: startsWith(github.ref, 'refs/tags/v')
+      with:
+        draft: true
+        files: |
+          calculator
+          calculator.sig
+          .github/cosign.pub
