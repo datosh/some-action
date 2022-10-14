@@ -55,6 +55,12 @@ jobs:
         with:
           name: calculator
           path: calculator
+      - name: Compute calculator hash
+        id: calculator-hash
+        run: |
+          CALCULATOR_HASH=$(sha256sum calculator | base64 -w0)
+          echo "CALCULATOR_HASH=${CALCULATOR_HASH}" >> $GITHUB_OUTPUT
+
 
   sign-calculator:
     runs-on: ubuntu-latest
@@ -225,22 +231,28 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
   provenance:
-    runs-on: ubuntu-latest
     permissions:
       actions: read
     needs:
       - build-calculator
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.2.0
+    with:
+      base64-subjects: "${{ needs.build-calculator.outputs.CALCULATOR_HASH }}"
+
+  show-provenance:
+    runs-on: ubuntu-latest
+    needs:
+      - provenance
     steps:
-      - name: Download calculator binary
+      - name: Download provenance
         uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
         with:
-          name: calculator
-      - name: Compute artifact hashes
-        id: artifact-hash
+          name: ${{ needs.provenance.outputs.provenance-name }}
+      - name: Show provenance
         run: |
-          ARTIFACT_HASH=$(sha256sum calculator | base64 -w0)
-          echo "ARTIFACT_HASH=${ARTIFACT_HASH}" >> $GITHUB_OUTPUT
-          echo ${ARTIFACT_HASH}
+          ls -la
+          ls -R
+          tree .
 
   release:
     runs-on: ubuntu-latest
