@@ -224,6 +224,37 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
+  provenance:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    needs:
+      - build-calculator
+    steps:
+      - name: Download calculator binary
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+        with:
+          name: calculator
+      - name: Compute artifact hashes
+        id: artifact-hash
+        run: |
+          ARTIFACT_HASH=$(sha256sum calculator | base64 -w0)
+          echo "ARTIFACT_HASH=${ARTIFACT_HASH}" >> $GITHUB_OUTPUT
+      - name: Generate provenance
+        id: provenance
+        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.2.0
+        with:
+          base64-subjects: "${{ steps.artifact-hash.outputs.ARTIFACT_HASH }}"
+      - name: Download provenance
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+        with:
+          name: ${{ steps.provenance.outputs.provenance-name }}
+      - name: Show provenance
+        run: |
+          ls -la
+          ls -R
+          tree .
+
   release:
     runs-on: ubuntu-latest
     permissions:
