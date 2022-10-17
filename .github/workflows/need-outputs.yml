@@ -1,7 +1,7 @@
 name: pass-outputs
 
 on:
-  push:
+  workflow_dispatch:
 
 permissions: {}
 
