@@ -3,16 +3,20 @@ name: pass-outputs
 on:
   push:
 
+permissions: {}
+
 jobs:
   generate-output:
     runs-on: ubuntu-latest
+    outputs:
+      calculator-hash: ${{ steps.calculator-hash.outputs.calculator-hash }}
     steps:
       - name: Compute calculator hash
+        id: calculator-hash
         run: |
           echo "foobar" > calculator
-          CALCULATOR_HASH=$(sha256sum calculator | base64 -w0)
-          echo CALCULATOR_HASH=${CALCULATOR_HASH} >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
+          calculator-hash=$(sha256sum calculator | base64 -w0)
+          echo calculator-hash=${calculator-hash} >> $GITHUB_OUTPUT
 
   read-output:
     runs-on: ubuntu-latest
@@ -21,4 +25,4 @@ jobs:
     steps:
       - name: Read hash
         run: |
-          echo ${{needs.generate-output.outputs.CALCULATOR_HASH}}
+          echo ${{ needs.generate-output.outputs.calculator-hash }}
