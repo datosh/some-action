@@ -3,8 +3,6 @@ name: pass-outputs
 on:
   push:
 
-permissions: {}
-
 jobs:
   generate-output:
     runs-on: ubuntu-latest
