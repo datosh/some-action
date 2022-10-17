@@ -24,4 +24,4 @@ jobs:
     steps:
       - name: Read hash
         run: |
-          cat ${{ needs.generate-output.outputs.CALCULATOR_HASH }}
+          cat ${{needs.generate-output.outputs.CALCULATOR_HASH}}
