@@ -275,6 +275,10 @@ jobs:
         uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
         with:
           name: calculator.sig
+      - name: Download provenance
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
+        with:
+          name: ${{ needs.provenance.outputs.provenance-name }}
       - name: Write public key
         run: |
           echo "$COSIGN_PUBLIC_KEY" > cosign.pub
@@ -284,4 +288,4 @@ jobs:
         uses: ncipollo/release-action@4c75f0f2e4ae5f3c807cf0904605408e319dcaac # tag=v1.11.1
         with:
           draft: true
-          artifacts: "calculator,calculator.sig,cosign.pub"
+          artifacts: "calculator,calculator.sig,cosign.pub,calculator.intoto.jsonl"
