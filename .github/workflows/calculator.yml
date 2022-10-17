@@ -135,10 +135,6 @@ jobs:
         uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3.0.0
         with:
           name: calculator
-      - name: look around
-        run: |
-          ls -la
-          tree . || true
       - name: Build and push container image
         id: build-container-image
         uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5 # tag=v3.2.0
@@ -147,6 +143,11 @@ jobs:
           file: cmd/calculator/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+      - name: Print output data
+        run: |
+          echo ImageID: ${{ steps.build-container-image.outputs.imageid }}
+          echo Digest: ${{ steps.build-container-image.outputs.digest }}
+          echo Metadata: ${{ steps.build-container-image.outputs.metadata }}
 
   sbom-image:
     runs-on: ubuntu-latest
