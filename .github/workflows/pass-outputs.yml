@@ -15,8 +15,8 @@ jobs:
         id: calculator-hash
         run: |
           echo "foobar" > calculator
-          calculator-hash=$(sha256sum calculator | base64 -w0)
-          echo calculator-hash=${calculator-hash} >> $GITHUB_OUTPUT
+          CALCULATOR_HASH=$(sha256sum calculator | base64 -w0)
+          echo calculator-hash=${CALCULATOR_HASH} >> $GITHUB_OUTPUT
 
   read-output:
     runs-on: ubuntu-latest
