@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Compute calculator hash
-        id: calculator-hash
         run: |
           echo "foobar" > calculator
           CALCULATOR_HASH=$(sha256sum calculator | base64 -w0)
@@ -24,4 +23,4 @@ jobs:
     steps:
       - name: Read hash
         run: |
-          echo ${{ needs.generate-output.outputs.CALCULATOR_HASH }}
+          echo ${{needs.generate-output.outputs.CALCULATOR_HASH}}
