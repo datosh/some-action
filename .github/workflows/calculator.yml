@@ -188,7 +188,7 @@ jobs:
           grype ${{ env.IMAGE_REF }}:${{ github.sha }} --fail-on critical --only-fixed
         shell: bash
         env:
-          COSIGN_EXPERIMENTAL: 1
+          # COSIGN_EXPERIMENTAL: 1
           COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
