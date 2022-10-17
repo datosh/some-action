@@ -263,6 +263,7 @@ jobs:
       - build-calculator
       - sign-calculator
       - unit-tests
+      - provenance
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Download calculator binary
