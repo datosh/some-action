@@ -188,7 +188,7 @@ jobs:
           grype ${{ env.IMAGE_REF }}:${{ github.sha }} --fail-on critical --only-fixed
         shell: bash
         env:
-          # COSIGN_EXPERIMENTAL: 1
+          # COSIGN_EXPERIMENTAL: 1 # This breaks verification with HTTP 404
           COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
@@ -253,9 +253,7 @@ jobs:
           name: ${{ needs.provenance.outputs.provenance-name }}
       - name: Show provenance
         run: |
-          ls -la
-          ls -R
-          tree .
+          cat calculator.intoto.jsonl
 
   release:
     runs-on: ubuntu-latest
