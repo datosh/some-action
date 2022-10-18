@@ -2,6 +2,7 @@ name: calculator
 
 on:
   push:
+  pull_request:
 
 permissions: {}
 
@@ -189,10 +190,6 @@ jobs:
           COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-
-  # TODO: Generate provenance
-  # TODO: Sign provenance
-  # TODO: Add signed provenance to container registry
 
   sign-calculator-image:
     runs-on: ubuntu-latest
