@@ -32,7 +32,7 @@ jobs:
         uses: dorny/test-reporter@c9b3d0e2bd2a4e96aaf424dbaa31c46b42318226 # tag=v1.6.0
         if: always()
         with:
-          name: calculator tests
+          name: 📋 Unit test report
           path: report.xml
           reporter: java-junit
 
@@ -123,6 +123,7 @@ jobs:
             type=sha,prefix=
             type=sha,format=long,prefix=
             type=semver,pattern={{version}}
+            type=semver,pattern=v{{version}}
             type=ref,event=branch
       - name: Log in to ghcr.io
         id: docker-login
@@ -143,11 +144,6 @@ jobs:
           file: cmd/calculator/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-      - name: Print output data
-        run: |
-          echo ImageID: ${{ steps.build-container-image.outputs.imageid }}
-          echo Digest: ${{ steps.build-container-image.outputs.digest }}
-          echo Metadata: ${{ steps.build-container-image.outputs.metadata }}
 
   sbom-image:
     runs-on: ubuntu-latest
