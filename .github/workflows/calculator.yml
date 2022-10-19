@@ -89,7 +89,7 @@ jobs:
           cosign verify-blob --key env://COSIGN_PUBLIC_KEY --signature calculator.sig calculator
           # Transparency Log Signature (input: artifact, key)
           echo "$COSIGN_PUBLIC_KEY" > cosign.pub
-          uuid=$(rekor-cli search --artifact calculator --public-key cosign.pub --pki-format x509 | tail -n 1)
+          uuid=$(rekor-cli search --artifact calculator --public-key cosign.pub --pki-format x509  --operator and | tail -n 1)
           sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
           cosign verify-blob --key env://COSIGN_PUBLIC_KEY --signature <(echo $sig) calculator
         shell: bash
