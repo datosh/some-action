@@ -15,7 +15,6 @@ jobs:
       - name: Decide
         run: |
           echo ${{ github }}
-          echo ${{ fromJSON(github) }}
           echo ${{ github.ref }}
           echo hello
         env:
