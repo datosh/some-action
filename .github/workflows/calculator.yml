@@ -88,7 +88,7 @@ jobs:
           # Local Signature (input: artifact, key, signature)
           cosign verify-blob --key env://COSIGN_PUBLIC_KEY --signature calculator.sig calculator
           # Transparency Log Signature (input: artifact, key)
-          uuid=$(rekor-cli search --artifact calculator | tail -n 1)
+          uuid=$(rekor-cli search --artifact calculator --public-key env://COSIGN_PUBLIC_KEY | tail -n 1)
           sig=$(rekor-cli get --uuid=$uuid --format=json | jq -r .Body.HashedRekordObj.signature.content)
           cosign verify-blob --key env://COSIGN_PUBLIC_KEY --signature <(echo $sig) calculator
         shell: bash
