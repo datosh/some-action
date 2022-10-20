@@ -1,7 +1,7 @@
 name: ternary
 
 on:
-  push:
+  workflow_dispatch:
 
 permissions: {}
 
