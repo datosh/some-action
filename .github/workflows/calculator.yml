@@ -1,7 +1,8 @@
 name: calculator
 
 on:
-  push:
+  # push:
+  workflow_dispatch:
 
 permissions: {}
 
