@@ -11,7 +11,15 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
-      - name: Is debug?
+      - name: Dump contexts
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+          ENV_CONTEXT: ${{ toJSON(env) }}
+          JOB_CONTEXT: ${{ toJSON(job) }}
         run: |
-          echo ACTIONS_RUNNER_DEBUG: $ACTIONS_RUNNER_DEBUG
-          echo ACTIONS_STEP_DEBUG: $ACTIONS_STEP_DEBUG
+          echo GITHUB_CONTEXT:
+          echo "$GITHUB_CONTEXT"
+          echo ENV_CONTEXT:
+          echo "$ENV_CONTEXT"
+          echo JOB_CONTEXT:
+          echo "$JOB_CONTEXT"
