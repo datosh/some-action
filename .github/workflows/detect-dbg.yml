@@ -16,7 +16,6 @@ jobs:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
           ENV_CONTEXT: ${{ toJSON(env) }}
           JOB_CONTEXT: ${{ toJSON(job) }}
-          JOBS_CONTEXT: ${{ toJSON(jobs) }}
           STEPS_CONTEXT: ${{ toJSON(steps) }}
           RUNNER_CONTEXT: ${{ toJSON(runner) }}
         run: |
@@ -26,8 +25,6 @@ jobs:
           echo "$ENV_CONTEXT"
           echo JOB_CONTEXT:
           echo "$JOB_CONTEXT"
-          echo JOBS_CONTEXT:
-          echo "$JOBS_CONTEXT"
           echo STEPS_CONTEXT:
           echo "$STEPS_CONTEXT"
           echo RUNNER_CONTEXT:
