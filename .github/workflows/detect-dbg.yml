@@ -1,7 +1,7 @@
 name: detect-dbg
 
 on:
-  push:
+  workflow_dispatch:
 
 permissions: {}
 
@@ -19,6 +19,7 @@ jobs:
           STEPS_CONTEXT: ${{ toJSON(steps) }}
           RUNNER_CONTEXT: ${{ toJSON(runner) }}
         run: |
+          echo ${{ runner.debug }}
           echo GITHUB_CONTEXT:
           echo "$GITHUB_CONTEXT"
           echo ENV_CONTEXT:

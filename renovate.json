@@ -17,6 +17,11 @@
       "matchManagers": ["github-actions"],
       "matchPackageNames": ["slsa-framework/slsa-github-generator"],
       "pinDigests": false
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchFiles": ["image.go"],
+      "versioning": "semver"
     }
   ]
 }
