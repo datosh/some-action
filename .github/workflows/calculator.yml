@@ -10,6 +10,7 @@ env:
   GO_VERSION: "1.19.2"
   SYFT_VERSION: "0.58.0"
   GRYPE_VERSION: "0.50.2"
+  SLSA_VERIFIER_VERSION: "1.4.1"
   IMAGE_REF: "ghcr.io/${{ github.repository }}/calculator"
 
 jobs:
@@ -234,6 +235,29 @@ jobs:
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.2.2
     with:
       base64-subjects: "${{ needs.build-calculator.outputs.calculator-hash }}"
+
+  provenance-verify:
+    runs-on: ubuntu-22.04
+    needs:
+      - provenance
+    steps:
+      - name: Download calculator binary
+        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        with:
+          name: calculator
+      - name: Download provenance
+        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        with:
+          name: ${{ needs.provenance.outputs.provenance-name }}
+      - name: Install slsa-verifier
+        run: |
+          curl -LO https://github.com/slsa-framework/slsa-verifier/releases/download/v${{ env.SLSA_VERIFIER_VERSION }}/slsa-verifier-linux-amd64
+          install slsa-verifier-linux-amd64 /usr/local/bin/slsa-verifier
+      - name: Verify provenance
+        run: |
+          slsa-verifier verify-artifact calculator \
+            --provenance-path calculator.intoto.jsonl \
+            --source-uri github.com/datosh/some-action
 
   release:
     runs-on: ubuntu-22.04
