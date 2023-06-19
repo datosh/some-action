@@ -76,7 +76,7 @@ jobs:
           cosign-version: "v1.13.1"
           rekor-cli-version: "v1.0.0"
       - name: Download calculator binary
-        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: calculator
       - name: Sign calculator
@@ -134,7 +134,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Download calculator binary
-        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: calculator
       - name: Build and push container image
@@ -243,11 +243,11 @@ jobs:
       - provenance
     steps:
       - name: Download calculator binary
-        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: calculator
       - name: Download provenance
-        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: ${{ needs.provenance.outputs.provenance-name }}
       - name: Install slsa-verifier
@@ -272,15 +272,15 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Download calculator binary
-        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: calculator
       - name: Download calculator signature
-        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: calculator.sig
       - name: Download provenance
-        uses: actions/download-artifact@9782bd6a9848b53b110e712e20e42d89988822b7 # tag=v3.0.1
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
         with:
           name: ${{ needs.provenance.outputs.provenance-name }}
       - name: Write public key
